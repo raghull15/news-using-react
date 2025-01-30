@@ -12,6 +12,7 @@ function FetchApi() {
     <div>
         <button onClick={fetchUser}> Fetch Github User</button>
     </div>
+    
   )
 }
 

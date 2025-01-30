@@ -1,22 +1,30 @@
 import React, { useEffect } from 'react'
-import { TextField, Typography, CircularProgress,Grid,Card } from "@mui/material";
-
+import { TextField, Typography, CircularProgress,Card, CardMedia, CardContent } from "@mui/material";
+import Grid from '@mui/material/Grid2';
 
 
 export const SearchUser = () => {
   const [news, setNews] = React.useState([]);
   let [searchText, setSearchText] = React.useState("");
-  let [loading, setLoading] = React.useState(false);
+  let [loading, setLoading] = React.useState(true);
   const [filteredNews,setfilteredNews] = React.useState([]);
 
   useEffect(() => {
       
     const fetchNews = async()=>{
-      const NEW_API = "https://newsapi.org/v2/top-headlines?country=us&category=business&apiKey=15b70fa011a94eef990296ebf4609a11";
-      const res = await fetch(NEW_API);
-      const data = await res.json();
-      setNews(data.articles);
-      setfilteredNews(data.articles);
+        try {
+            const NEW_API = "https://newsapi.org/v2/top-headlines?country=us&category=business&apiKey=15b70fa011a94eef990296ebf4609a11";
+            const res = await fetch(NEW_API);
+            const data = await res.json();
+            setNews(data.articles);
+            setfilteredNews(data.articles);
+            setLoading(false)
+            
+        } catch (error) {
+            console.log("No News Found, Error Message",error);    
+        }finally{
+            setLoading(false);
+        }
   }
   fetchNews()
   }, []);
@@ -36,7 +44,7 @@ export const SearchUser = () => {
   }
 
   return (
-    <div>  
+    <div>
     <h3>SearchUser</h3>
     <TextField
       fullWidth
@@ -55,15 +63,17 @@ export const SearchUser = () => {
         </div>
       ) : (
         <div>
-          <Grid container>
+          <Grid container rowSpacing={1} columnSpacing={{xs:1,sm:3,md:4}}>
           {
             filteredNews.map((value, index)=>{
               return(
-                  <Grid item key={index}>
-                    <Card>
-                      <Typography variant ='h4'>{value.title}</Typography>
-                      <Typography variant='body2'>{value.title}</Typography>
-                    </Card>
+                  <Grid item key={index} xs={6} md={4} >
+                        <Card>
+                            <CardMedia sx={{height:'200px'}}image={value.urlToImage}/>
+                            < CardContent> </CardContent>
+                            <Typography variant ='h5'>{value.title}</Typography>
+                            <Typography variant='body2'>{value.description}</Typography>
+                        </Card>
                     </Grid>
               )
             })
